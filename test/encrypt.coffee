@@ -82,7 +82,7 @@ describe 'new EncryptedModel', ->
     assert.propertyVal simpleTestDoc1, 'num', 42
     assert.property simpleTestDoc1, 'date'
     assert.equal simpleTestDoc1.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-    assert.propertyVal simpleTestDoc1, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+    assert.equal simpleTestDoc1.id2.toString(), '5303e65d34e1e80d7a7ce212'
     assert.lengthOf simpleTestDoc1.arr, 2
     assert.equal simpleTestDoc1.arr[0], 'alpha'
     assert.equal simpleTestDoc1.arr[1], 'bravo'
@@ -356,7 +356,7 @@ describe 'EncryptedModel.create()', ->
       assert.propertyVal doc, 'num', 42
       assert.property doc, 'date'
       assert.equal doc.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-      assert.propertyVal doc, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+      assert.equal doc.id2.toString(), '5303e65d34e1e80d7a7ce212'
       assert.lengthOf doc.arr, 2
       assert.equal doc.arr[0], 'alpha'
       assert.equal doc.arr[1], 'bravo'
@@ -427,7 +427,7 @@ describe 'EncryptedModel.find()', ->
       assert.propertyVal doc, 'num', 42
       assert.property doc, 'date'
       assert.equal doc.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-      assert.propertyVal doc, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+      assert.equal doc.id2.toString(), '5303e65d34e1e80d7a7ce212'
       assert.lengthOf doc.arr, 2
       assert.equal doc.arr[0], 'alpha'
       assert.equal doc.arr[1], 'bravo'
@@ -612,7 +612,7 @@ describe 'document.decrypt()', ->
       assert.propertyVal @encryptedSimpleTestDoc, 'num', 42
       assert.property @encryptedSimpleTestDoc, 'date'
       assert.equal @encryptedSimpleTestDoc.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-      assert.propertyVal @encryptedSimpleTestDoc, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+      assert.equal @encryptedSimpleTestDoc.id2.toString(), '5303e65d34e1e80d7a7ce212'
       assert.lengthOf @encryptedSimpleTestDoc.arr, 2
       assert.equal @encryptedSimpleTestDoc.arr[0], 'alpha'
       assert.equal @encryptedSimpleTestDoc.arr[1], 'bravo'
@@ -633,7 +633,7 @@ describe 'document.decrypt()', ->
       assert.propertyVal @simpleTestDoc6, 'num', 42
       assert.property @simpleTestDoc6, 'date'
       assert.equal @simpleTestDoc6.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-      assert.propertyVal @simpleTestDoc6, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+      assert.equal @simpleTestDoc6.id2.toString(), '5303e65d34e1e80d7a7ce212'
       assert.lengthOf @simpleTestDoc6.arr, 2
       assert.equal @simpleTestDoc6.arr[0], 'alpha'
       assert.equal @simpleTestDoc6.arr[1], 'bravo'
@@ -656,7 +656,7 @@ describe 'document.decrypt()', ->
         assert.propertyVal @encryptedSimpleTestDoc, 'num', 42
         assert.property @encryptedSimpleTestDoc, 'date'
         assert.equal @encryptedSimpleTestDoc.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-        assert.propertyVal @encryptedSimpleTestDoc, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+        assert.equal @encryptedSimpleTestDoc.id2.toString(), '5303e65d34e1e80d7a7ce212'
         assert.lengthOf @encryptedSimpleTestDoc.arr, 2
         assert.equal @encryptedSimpleTestDoc.arr[0], 'alpha'
         assert.equal @encryptedSimpleTestDoc.arr[1], 'bravo'
@@ -700,7 +700,7 @@ describe 'document.decryptSync()', ->
     assert.propertyVal simpleTestDoc7, 'num', 42
     assert.property simpleTestDoc7, 'date'
     assert.equal simpleTestDoc7.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-    assert.propertyVal simpleTestDoc7, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+    assert.equal simpleTestDoc7.id2.toString(), '5303e65d34e1e80d7a7ce212'
     assert.lengthOf simpleTestDoc7.arr, 2
     assert.equal simpleTestDoc7.arr[0], 'alpha'
     assert.equal simpleTestDoc7.arr[1], 'bravo'
@@ -720,7 +720,7 @@ describe 'document.decryptSync()', ->
     assert.propertyVal simpleTestDoc7, 'num', 42
     assert.property simpleTestDoc7, 'date'
     assert.equal simpleTestDoc7.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-    assert.propertyVal simpleTestDoc7, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+    assert.equal simpleTestDoc7.id2.toString(), '5303e65d34e1e80d7a7ce212'
     assert.lengthOf simpleTestDoc7.arr, 2
     assert.equal simpleTestDoc7.arr[0], 'alpha'
     assert.equal simpleTestDoc7.arr[1], 'bravo'
@@ -1079,19 +1079,17 @@ describe 'Array EmbeddedDocument', ->
           _id: @parentDoc._id
           'children._ct': $exists: true
           'children.text': $exists: false
-        .exec()
-        .then (docs) ->
+        , (err, docs) ->
+          assert.equal err, null
           assert.lengthOf docs, 1
           assert.propertyVal docs[0].children[0], 'text', 'Child unencrypted text'
           done()
-        , done
-        .end()
 
     describe 'document.find()', ->
       it 'when parent doc found, should pass an unencrypted version of the embedded document to the callback', (done) ->
         @ParentModel.findById @parentDoc._id
-        .exec()
-        .then (doc) ->
+        , (err, doc) ->
+          assert.equal err, null
           assert.propertyVal doc, 'text', 'Unencrypted text'
           assert.isArray doc.children
           assert.isObject doc.children[0]
@@ -1099,8 +1097,6 @@ describe 'Array EmbeddedDocument', ->
           assert.property doc.children[0], '_id'
           assert.notProperty doc.children[0], '_ct'
           done()
-        , done
-        .end()
 
     describe 'when child field is in additionalAuthenticatedFields on parent and child documents are tampered with by swapping their ciphertext', ->
       it 'should pass an error', (done) ->
@@ -1170,7 +1166,7 @@ describe 'Array EmbeddedDocument', ->
           assert.notProperty doc.children[0], '_ct'
           done()
 
-  describe 'Encrypted embedded document when parent has validation error and doesnt have encryptedChildren plugin', ->
+  describe 'Encrypted embedded document when parent has validation error', ->
     before ->
       ChildModelSchema = mongoose.Schema
         text: type: String
@@ -1190,179 +1186,22 @@ describe 'Array EmbeddedDocument', ->
       @ParentModel2 = mongoose.model 'ParentWithoutPlugin', ParentModelSchema
       @ChildModel2 = mongoose.model 'ChildAgain', ChildModelSchema
 
-    describe 'in mongoose prior to v4.1.1', ->
+    it 'should return unencrypted embedded documents after failed parent save', (done) ->
+      return done() if mongoose.version < '4.1.1'
 
-      it 'should return encrypted embedded documents', (done) ->
-        return done() if mongoose.version > '4.1.0'
+      doc = new @ParentModel2
+        text: 'here it is'
+        children: [{text: 'Child unencrypted text'}]
 
-        doc = new @ParentModel2
-          text: 'here it is'
-          children: [{text: 'Child unencrypted text'}]
-
-        doc.save (err) ->
-          assert.ok err, 'There should be a validation error'
-          assert.propertyVal doc, 'text', 'here it is'
-          assert.isArray doc.children
-          assert.isObject doc.children[0]
-          assert.property doc.children[0], '_id'
-          assert.property doc.children[0], '_ct'
-          assert.notProperty doc.children[0], 'text'
-          done()
-
-    describe 'in mongoose v4.1.1 and after', ->
-
-      it 'should return unencrypted embedded documents after failed parent save', (done) ->
-        return done() if mongoose.version < '4.1.1'
-
-        doc = new @ParentModel2
-          text: 'here it is'
-          children: [{text: 'Child unencrypted text'}]
-
-        doc.save (err) ->
-          assert.ok err, 'There should be a validation error'
-          assert.propertyVal doc, 'text', 'here it is'
-          assert.isArray doc.children
-          assert.isObject doc.children[0]
-          assert.property doc.children[0], '_id'
-          assert.notProperty doc.children[0], '_ct'
-          assert.property doc.children[0], 'text', 'Child unencrypted text'
-          done()
-
-  describe 'Encrypted embedded document when parent has validation error and has encryptedChildren plugin', ->
-
-    before ->
-      ChildModelSchema = mongoose.Schema
-        text: type: String
-
-      ChildModelSchema.plugin encrypt,
-        encryptionKey: encryptionKey, signingKey: signingKey
-        encryptedFields: ['text']
-
-      @ParentModelSchema = mongoose.Schema
-        text: type: String
-        children: [ChildModelSchema]
-
-      @ParentModelSchema.pre 'validate', (next) ->
-          @invalidate 'text', 'invalid', this.text
-          next()
-
-      @sandbox = sinon.sandbox.create()
-      @sandbox.stub console, 'warn'
-      @sandbox.spy @ParentModelSchema, 'post'
-
-      @ParentModelSchema.plugin encrypt.encryptedChildren
-
-      @ParentModel2 = mongoose.model 'ParentWithPlugin', @ParentModelSchema
-      @ChildModel2 = mongoose.model 'ChildOnceMore', ChildModelSchema
-
-    after ->
-      @sandbox.restore()
-
-    describe 'in mongoose prior to v4.1.1', ->
-
-      it 'adds the plugin', ->
-        return if mongoose.version > '4.1.0'
-
-        assert.strictEqual console.warn.callCount, 0
-        assert.strictEqual @ParentModelSchema.post.callCount, 1
-        assert.strictEqual @ParentModelSchema.post.firstCall.args[0], 'validate'
-
-      it 'should return unencrypted embedded documents', (done) ->
-        return done() if mongoose.version > '4.1.0'
-
-        doc = new @ParentModel2
-          text: 'here it is'
-          children: [{text: 'Child unencrypted text'}]
-        doc.save (err) ->
-          assert.ok err, 'There should be a validation error'
-          assert.propertyVal doc, 'text', 'here it is'
-          assert.isArray doc.children
-          assert.property doc.children[0], '_id'
-          assert.notProperty doc.children[0], '_ct'
-          assert.property doc.children[0], 'text', 'Child unencrypted text'
-          done()
-
-    describe 'in mongoose v4.1.1 and after', ->
-
-      it 'should abort adding encryptedChildren plugin', ->
-        return if mongoose.version < '4.1.1'
-
-        assert.strictEqual console.warn.callCount, 1
-        assert.strictEqual console.warn.firstCall.args[0], 'encryptedChildren plugin is not needed for mongoose versions above 4.1.1, continuing without plugin.'
-        assert.strictEqual @ParentModelSchema.post.callCount, 0
-
-      it 'should return unencrypted embedded documents', (done) ->
-        return done() if mongoose.version < '4.1.1'
-
-        doc = new @ParentModel2
-          text: 'here it is'
-          children: [{text: 'Child unencrypted text'}]
-        doc.save (err) ->
-          assert.ok err, 'There should be a validation error'
-          assert.propertyVal doc, 'text', 'here it is'
-          assert.isArray doc.children
-          assert.property doc.children[0], '_id'
-          assert.notProperty doc.children[0], '_ct'
-          assert.property doc.children[0], 'text', 'Child unencrypted text'
-          done()
-
-  describe 'Encrypted embedded document when parent has both encrypt and encryptedChildren plugins', ->
-    before ->
-      ChildModelSchema = mongoose.Schema
-        text: type: String
-
-      ChildModelSchema.plugin encrypt,
-        encryptionKey: encryptionKey, signingKey: signingKey
-        encryptedFields: ['text']
-
-      ParentModelSchema = mongoose.Schema
-        text: type: String
-        children: [ChildModelSchema]
-        encryptedText: type: String
-
-      ParentModelSchema.plugin encrypt.encryptedChildren
-      ParentModelSchema.plugin encrypt,
-        encryptionKey: encryptionKey, signingKey: signingKey
-        encryptedFields: ['encryptedText']
-
-      @ParentModel2 = mongoose.model 'ParentWithBothPlugins', ParentModelSchema
-      @ChildModel2 = mongoose.model 'Child2', ChildModelSchema
-
-    describe 'when parent document has validation error', =>
-      before ->
-        @invalidDoc = new @ParentModel2
-          text: 'here it is'
-          encryptedText: 'here is more'
-          children: [{text: 'Child unencrypted text'}]
-        @invalidDoc.invalidate 'text', 'invalid', this.text
-
-      it 'should return unencrypted parent and embedded documents', (done) ->
-        doc = @invalidDoc
-        @invalidDoc.save (err) ->
-          assert.ok err, 'There should be a validation error'
-          assert.propertyVal doc, 'text', 'here it is'
-          assert.propertyVal doc, 'encryptedText', 'here is more'
-          assert.isArray doc.children
-          assert.property doc.children[0], '_id'
-          assert.notProperty doc.children[0], '_ct'
-          assert.property doc.children[0], 'text', 'Child unencrypted text'
-          done()
-
-    describe 'when parent document does not have validation error', =>
-      it 'should return unencrypted parent and embedded documents', (done) ->
-        doc = new @ParentModel2
-          text: 'here it is'
-          encryptedText: 'here is more'
-          children: [{text: 'Child unencrypted text'}]
-        doc.save (err) ->
-          assert.equal err, null
-          assert.propertyVal doc, 'text', 'here it is'
-          assert.isArray doc.children
-          assert.property doc.children[0], '_id'
-          assert.notProperty doc.children[0], '_ct'
-          assert.property doc.children[0], 'text', 'Child unencrypted text'
-          done()
-
+      doc.save (err) ->
+        assert.ok err, 'There should be a validation error'
+        assert.propertyVal doc, 'text', 'here it is'
+        assert.isArray doc.children
+        assert.isObject doc.children[0]
+        assert.property doc.children[0], '_id'
+        assert.notProperty doc.children[0], '_ct'
+        assert.property doc.children[0], 'text', 'Child unencrypted text'
+        done()
 
 describe 'document.sign()', ->
   before (done) ->
@@ -1935,7 +1774,7 @@ describe 'migrations', ->
             assert.propertyVal migratedDoc1, 'num', 42
             assert.property migratedDoc1, 'date'
             assert.equal migratedDoc1.date.toString(), new Date("2014-05-19T16:39:07.536Z").toString()
-            assert.propertyVal migratedDoc1, 'id2', mongoose.Schema.Types.ObjectId '5303e65d34e1e80d7a7ce212'
+            assert.equal migratedDoc1.id2.toString(), '5303e65d34e1e80d7a7ce212'
             assert.lengthOf migratedDoc1.arr, 2
             assert.equal migratedDoc1.arr[0], 'alpha'
             assert.equal migratedDoc1.arr[1], 'bravo'
@@ -2013,7 +1852,6 @@ describe 'migrations', ->
 
 
             PreviouslyUnencryptedModelMigrated.findById @docId, (err, migratedDoc) =>
-              console.log(migratedDoc)
               assert.equal err, null, 'There should be no authentication error after migrated'
               assert.propertyVal migratedDoc, 'text', 'Plain'
               assert.propertyVal migratedDoc, 'bool', true

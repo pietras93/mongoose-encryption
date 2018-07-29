@@ -1,5 +1,10 @@
 mongoose-encryption
 ==================
+
+[![npm version](https://badge.fury.io/js/mongoose-encryption.svg)](https://badge.fury.io/js/mongoose-encryption)
+[![Build Status](https://travis-ci.com/joegoldbeck/mongoose-encryption.svg?branch=master)](https://travis-ci.com/joegoldbeck/mongoose-encryption)
+[![GitHub license](https://img.shields.io/github/license/joegoldbeck/mongoose-encryption.svg)](https://github.com/joegoldbeck/mongoose-encryption/blob/master/LICENSE)
+
 Simple encryption and authentication for mongoose documents. Relies on the Node `crypto` module. Encryption and decryption happen transparently during save and find. Rather than encrypting fields individually, this plugin takes advantage of the BSON nature of mongoDB documents to encrypt multiple fields at once.
 
 
@@ -113,7 +118,7 @@ PowerUser = mongoose.model('PowerUser', poweruserSchema);
 
 ### Encrypt Specific Fields of Sub Docs
 
-You can even encrypt fields of sub-documents, you just need to add the `encrypt` plugin to the subdocument schema. *Subdocuments are not self-authenticated*, so you should consider adding the `encrypt` plugin to the parent schema as well for the authentication it provides, in addition to adding the `encrypt.encryptedChildren` plugin to the parent if you continue to work with documents following failed saves caused by validation errors.
+You can even encrypt fields of sub-documents, you just need to add the `encrypt` plugin to the subdocument schema. *Subdocuments are not self-authenticated*, so you should consider adding the `encrypt` plugin to the parent schema as well for the authentication it provides.
 ```
 var hidingPlaceSchema = new Schema({
   latitude: Number,
@@ -140,11 +145,7 @@ userSchema.plugin(encrypt, {
   encryptedFields: []
 });
 
-// optional in Mongoose 3.x, not necessary in Mongoose 4.x. only needed for correct document behavior following validation errors during a save
-userSchema.plugin(encrypt.encryptedChildren);
-
 ```
-The need for `encrypt.encryptedChildren` in Mongoose 3.x arises because in those Mongoose versions, subdocument 'pre save' hooks are called before parent validation completes, and there are no subdocument hooks that fire when parent validation fails. Without the plugin, if you repair a parent doc after a failed save and then try to save again, data in the encrypted fields of the subdocuments will be lost. In Mongoose 4.x, this behavior is fixed.
 
 
 ### Save Behavior
@@ -335,11 +336,13 @@ None of the authors are security experts. We relied on accepted tools and practi
 
 Huge thanks goes out to [Cinch Financial](https://www.cinchfinancial.com) for supporting this plugin through version 1.0, as well as [@stash](//github.com/stash) for pointing out the limitations of earlier versions which lacked authentication and providing invaluable guidance and review on version 0.12.0.
 
+Feel like contributing with different kinds of bits? Eth: 0xb53b70d5BE66a03E85F6502d1D060871a79a47f7
+
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2016, 2017 Joseph Goldbeck
+Copyright (c) 2016-2018 Joseph Goldbeck
 
 Copyright (c) 2014-2015 Joseph Goldbeck and Connect Financial, LLC
 
